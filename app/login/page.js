@@ -1,0 +1,266 @@
+"use client";
+import React, { useState } from 'react';
+import { useEffect } from 'react';
+import { auth, db } from '../firebase';
+import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider, GithubAuthProvider, FacebookAuthProvider } from 'firebase/auth';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { useRouter } from 'next/navigation';
+
+const page = () => {
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
+  const [resetMessage, setResetMessage] = useState("");
+  const [loading, setLoading] = useState(false); // New loading state
+  const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    document.title = "ExpenseTree - Login";
+  }, [])
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+    setError("");
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true); // Set loading to true
+    const auth = getAuth();
+    try {
+      await signInWithEmailAndPassword(auth, form.email, form.password);
+      router.push('/'); // Redirect after successful login
+    } catch (err) {
+      setError(err.message); // Set error message if login fails
+    } finally {
+      setLoading(false); // Reset loading state after processing
+    }
+  };
+
+  const handlePasswordReset = async () => {
+    const auth = getAuth();
+    try {
+      await sendPasswordResetEmail(auth, form.email);
+      setResetMessage("Password reset email sent! Please check your email.");
+      setError("");
+    } catch (err) {
+      setError("Unable to send reset email. Make sure the email is correct.");
+      setResetMessage("");
+    }
+  };
+
+  const signInWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    setLoading(true); // Set loading to true
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      const userDoc = doc(db, "users", user.uid);
+      const userSnapshot = await getDoc(userDoc);
+      if (!userSnapshot.exists()) {
+        await setDoc(userDoc, {
+          uid: user.uid,
+          displayName: user.displayName,
+          email: user.email,
+          createdAt: new Date(),
+          monthlyBudget: 0,
+          notificationsEnabled: true,
+          lastStoredMonth: new Date().getMonth(), 
+        lastStoredYear: new Date().getFullYear()
+        });
+      }
+      router.push("/");
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false); // Reset loading state after processing
+    }
+  };
+
+  const signInWithGithub = async () => {
+    const provider = new GithubAuthProvider();
+    setLoading(true); // Set loading to true
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      const userDoc = doc(db, "users", user.uid);
+      const userSnapshot = await getDoc(userDoc);
+      if (!userSnapshot.exists()) {
+        await setDoc(userDoc, {
+          uid: user.uid,
+          displayName: user.displayName,
+          email: user.email,
+          createdAt: new Date(),
+          monthlyBudget: 0,
+          notificationsEnabled: true,
+          lastStoredMonth: new Date().getMonth(), 
+        lastStoredYear: new Date().getFullYear()
+        });
+      }
+      router.push("/");
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false); // Reset loading state after processing
+    }
+  };
+
+  const signInWithFacebook = async () => {
+    const provider = new FacebookAuthProvider();
+    setLoading(true); // Set loading to true
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      const userDoc = doc(db, "users", user.uid);
+      const userSnapshot = await getDoc(userDoc);
+      if (!userSnapshot.exists()) {
+        await setDoc(userDoc, {
+          uid: user.uid,
+          displayName: user.displayName,
+          email: user.email,
+          createdAt: new Date(),
+          monthlyBudget: 0,
+          notificationsEnabled: true,
+          lastStoredMonth: new Date().getMonth(), 
+        lastStoredYear: new Date().getFullYear()
+        });
+      }
+      router.push("/"); // Redirect to homepage
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false); // Reset loading state after processing
+    }
+  };
+
+  return (
+    <section className="min-h-screen flex items-center justify-center bg-gray-50 gap-8">
+      <div className="w-full max-w-md p-8 space-y-8 bg-white shadow-lg rounded-lg mx-5">
+        <h2 className="text-center text-3xl font-bold text-green-600">Login</h2>
+        {error && <p className="text-red-500 text-center">{error}</p>}
+        {resetMessage && <p className="text-green-500 text-center">{resetMessage}</p>}
+        
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="email" className="text-gray-800">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-green-600"
+              style={{ color: 'black' }}
+              placeholder="you@example.com"
+              required
+            />
+          </div>
+          <div className='relative'>
+            <label htmlFor="password" className="text-gray-800">Password</label>
+            <input
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-green-600 pr-10"
+              style={{ color: 'black' }}
+              placeholder="Your Password"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-10 text-gray-400 hover:text-gray-200"
+            >
+              {showPassword ? (
+               <img src="/eye.png" className='w-5 relative bottom-1' alt="" />
+              ) : (
+               <img src="/eyecross.png" className='w-5 relative bottom-1' alt="" />
+              )}
+            </button>
+          </div>
+          <button
+            type="submit"
+            className="w-full py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+            disabled={loading} // Disable button when loading
+          >
+            {loading ? "Logging In..." : "Login"} {/* Change button text based on loading */}
+          </button>
+        </form>
+
+        {/* Forgot Password Link */}
+        <div className="text-center">
+          <button
+            onClick={handlePasswordReset}
+            className="text-sm text-green-600 hover:underline"
+            disabled={loading} // Disable button when loading
+          >
+            Forgot Password?
+          </button>
+        </div>
+
+        <p className="text-center text-gray-600">
+          Don&apos;t have an account?{" "}
+          <a href="/signup" className="text-green-600 hover:underline">Sign up</a>
+        </p>
+
+        {/* Social sign in option for smaller screens */}
+        <hr className='bg-slate-200 lg:hidden' />
+        <div className='text-gray-400 flex justify-center text-center lg:hidden relative bottom-3'>or</div>
+
+        <div className='flex flex-col lg:hidden relative bottom-3'>
+          <button onClick={signInWithGoogle} type="button" className="text-white bg-[#4d8ef6] hover:bg-[#4285F4]/90 focus:ring-4 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex justify-center items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2" disabled={loading}>
+          <svg className='w-5 h-5 me-2' xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 48 48">
+<path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
+</svg>
+            Sign in with Google
+          </button>
+
+          <button onClick={signInWithGithub} type="button" className="text-white bg-[#24292F] hover:bg-[#24292F]/90 focus:ring-4 focus:outline-none focus:ring-[#24292F]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex justify-center items-center dark:focus:ring-gray-500 dark:hover:bg-[#050708]/30 me-2 mb-2" disabled={loading}>
+            <svg className="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 0c-.732 0-1.431.15-2.083.417C5.444.693 5.333 1.67 5.667 2.92c.218.999.796 1.908 1.607 2.443.003-.057.008-.113.008-.171 0-1.179-.664-2.29-1.672-2.853A1.537 1.537 0 0 1 8 0Zm7.657 7.171C13.613 5.616 11.585 4.25 9.25 4.25c-.724 0-1.455.099-2.107.298a2.681 2.681 0 0 0 1.27 3.13C10.26 9.151 12.571 11.5 12.571 11.5c.479-.007.947-.034 1.442-.086A7.42 7.42 0 0 0 16 8c0-1.194-.284-2.313-.756-3.33a7.09 7.09 0 0 0-.587 2.634 5.586 5.586 0 0 0-1.66-.116ZM1.747 4.908C.758 5.628.5 6.91.5 8c0 2.5 1.98 4.5 4.5 4.5a7.748 7.748 0 0 0 2.736-.526c.153-.063.303-.136.45-.217-1.158-.737-2.184-1.53-2.6-2.366-.232-.567-.292-1.037-.292-1.662 0-.155.021-.302.056-.447A4.418 4.418 0 0 0 3.176 6.17a3.472 3.472 0 0 1-1.429-.263c.5 1.155.18 2.545.873 3.597a4.513 4.513 0 0 1 2.55-.815c-.5-.194-1.029-.603-1.29-1.1C5.813 6.618 6.915 6.094 8 6.094c.186 0 .367.021.542.057C8.327 6.72 8.568 7 9 7c1.105 0 2 .895 2 2 0 .414-.05.82-.14 1.2a2.557 2.557 0 0 0-1.055-.063C11.807 8.643 10.867 8 10 8c-1.105 0-2 .895-2 2 0 .137.018.272.049.404a4.568 4.568 0 0 0 2.36-.197 3.188 3.188 0 0 1-1.51-1.469c-.07.083-.137.166-.207.248a4.428 4.428 0 0 1-2.085 1.267c.06.12.143.232.238.335C4.557 12.328 3 10.163 3 8c0-.722.085-1.437.246-2.131.164.082.332.129.507.129.428 0 .839-.228 1.073-.605-.61-.024-1.087-.113-1.287-.257a4.371 4.371 0 0 1-.706-.625A4.442 4.442 0 0 1 0 8c0 1.906.832 3.743 2.24 4.908A8.948 8.948 0 0 1 8 16c.228 0 .454-.008.678-.021a8.472 8.472 0 0 0 6.45-3.028A8.45 8.45 0 0 0 16 8c0-.025-.006-.049-.007-.074a8.424 8.424 0 0 0-.084-.494C14.52 4.695 11.667 2 8 2c-1.81 0-3.505.566-5.253 1.474C2.968 4.362 1.919 4.795 1.747 4.908Z"/>
+            </svg>
+            Sign in with GitHub
+          </button>
+
+          <button onClick={signInWithFacebook} type="button" className="text-white bg-[#3b5998] hover:bg-[#3b5998]/90 focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex justify-center items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
+<svg className="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 8 19">
+<path fillRule="evenodd" d="M6.135 3H8V0H6.135a4.147 4.147 0 0 0-4.142 4.142V6H0v3h2v9.938h3V9h2.021l.592-3H5V3.591A.6.6 0 0 1 5.592 3h.543Z" clipRule="evenodd"/>
+</svg>
+Sign in with Facebook
+</button>
+        </div>
+      </div>
+
+       {/* Social sign in option for larger screens */}
+       <div className='text-gray-400 lg:inline-block hidden'>or</div>
+
+<div className='lg:flex flex-col hidden'>
+  <button onClick={signInWithGoogle} type="button" className="text-white bg-[#4d8ef6] hover:bg-blue-300 focus:ring-4 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 me-2 mb-2">
+  <svg className='w-5 h-5 me-2' xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 48 48">
+<path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
+</svg>
+    Sign in with Google
+  </button>
+
+  <button onClick={signInWithGithub} type="button" className="text-white bg-[#24292F] hover:bg-[#24292F]/90 focus:ring-4 focus:outline-none focus:ring-[#24292F]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-500 dark:hover:bg-[#050708]/30 me-2 mb-2">
+    <svg className="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+      <path fillRule="evenodd" d="M10 .333A9.911 9.911 0 0 0 6.866 19.65c.5.092.678-.215.678-.477 0-.237-.01-1.017-.014-1.845-2.757.6-3.338-1.169-3.338-1.169a2.627 2.627 0 0 0-1.1-1.451c-.9-.615.07-.6.07-.6a2.084 2.084 0 0 1 1.518 1.021 2.11 2.11 0 0 0 2.884.823c.044-.503.268-.973.63-1.325-2.2-.25-4.516-1.1-4.516-4.9A3.832 3.832 0 0 1 4.7 7.068a3.56 3.56 0 0 1 .095-2.623s.832-.266 2.726 1.016a9.409 9.409 0 0 1 4.962 0c1.89-1.282 2.717-1.016 2.717-1.016.366.83.402 1.768.1 2.623a3.827 3.827 0 0 1 1.02 2.659c0 3.807-2.319 4.644-4.525 4.889a2.366 2.366 0 0 1 .673 1.834c0 1.326-.012 2.394-.012 2.72 0 .263.18.572.681.475A9.911 9.911 0 0 0 10 .333Z" clipRule="evenodd"/>
+    </svg>
+    Sign in with Github
+  </button>
+
+  <button onClick={signInWithFacebook} type="button" className="text-white bg-[#3b5998] hover:bg-[#6a80b0] focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex justify-center items-center dark:focus:ring-[#3b5998]/55 me-2 mb-2">
+<svg className="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 8 19">
+<path fillRule="evenodd" d="M6.135 3H8V0H6.135a4.147 4.147 0 0 0-4.142 4.142V6H0v3h2v9.938h3V9h2.021l.592-3H5V3.591A.6.6 0 0 1 5.592 3h.543Z" clipRule="evenodd"/>
+</svg>
+Sign in with Facebook
+</button>
+</div>
+    </section>
+  );
+};
+
+export default page;
