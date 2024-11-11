@@ -57,7 +57,7 @@ const Navbar = () => {
     <div className="flex items-center justify-between w-full md:justify-start mb-4 md:mb-0">
       <Link href="/" className="flex items-center">
         <Image src={"/logo.png"} width={40} height={10} alt="logo" />
-        <span className="flex lg:text-2xl text-xl font-bold text-yellow-500 tracking-tight ml-2">
+        <span className="flex lg:text-2xl text-lg font-bold text-yellow-500 tracking-tight ml-2">
           Expense<h1 className="font-bold text-green-600">Tree</h1>
         </span>
       </Link>
@@ -103,10 +103,10 @@ const Navbar = () => {
         </div>
       ) : (
         <>
-          <Link href="/signup" className="bg-pink-500 text-white px-4 py-2 rounded-md hover:bg-pink-600 transition font-bold">
+          <Link href="/signup" className="hidden lg:block bg-pink-500 text-white px-4 py-2 rounded-md hover:bg-pink-600 transition font-bold">
             Sign Up
           </Link>
-          <Link href="/login" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition font-bold">
+          <Link href="/login" className="hidden md:block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition font-bold">
             Login
           </Link>
         </>
@@ -121,7 +121,7 @@ const Navbar = () => {
           animate={{ opacity: 1, y: 8.1 }}
           exit={{ opacity: 0, y: -14 }}
           transition={{ duration: 0.3 }}
-          className="md:hidden absolute top-16 left-0 right-0 bg-white shadow-lg z-10"
+          className="md:hidden absolute top-[62px] left-0 right-0 bg-white shadow-lg z-10"
         >
           <Link href="/" className="block px-4 py-2 text-gray-700 hover:bg-green-100">
             Home
