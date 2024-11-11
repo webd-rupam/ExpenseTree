@@ -21,7 +21,7 @@ import {
 } from 'recharts';
 
 
-const page = () => {
+const Dashboard = () => {
   const SidebarLink = ({ onClick, icon, label }) => (
     <button
       onClick={onClick}
@@ -1189,4 +1189,4 @@ useEffect(() => {
   );
 };
 
-export default page;
+export default Dashboard;

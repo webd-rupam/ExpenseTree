@@ -6,7 +6,7 @@ import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, signInWith
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 
-const page = () => {
+const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [resetMessage, setResetMessage] = useState("");
@@ -263,4 +263,4 @@ Sign in with Facebook
   );
 };
 
-export default page;
+export default Login;

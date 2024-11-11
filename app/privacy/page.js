@@ -3,7 +3,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-const page = () => {
+const Privacy = () => {
   const router = useRouter();
 
   useEffect(() => {
@@ -118,4 +118,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Privacy;

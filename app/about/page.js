@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 
-const page = () => {
+const About = () => {
     const router = useRouter()
     useEffect(() => {
       document.title = "ExpenseTree - About";
@@ -87,4 +87,4 @@ const page = () => {
   );
 }
 
-export default page;
+export default About;

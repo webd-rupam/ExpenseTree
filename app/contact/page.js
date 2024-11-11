@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
 
-const page = () => {
+const Contact = () => {
   const router = useRouter();
   const [form, setForm] = useState({ email: "", name: "", message: "" });
   const [loading, setLoading] = useState(false);
@@ -75,7 +75,7 @@ const page = () => {
             Get in Touch
           </h2>
           <p className="text-gray-600 text-center mb-8 text-lg">
-            Have questions or need assistance? Drop us a message and we'll get back to you shortly!
+            Have questions or need assistance? Drop us a message and we&apos;ll get back to you shortly!
           </p>
 
 
@@ -157,4 +157,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Contact;
