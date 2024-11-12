@@ -61,8 +61,13 @@ const Homepage = () => {
       )}
 
       <section 
-        className="relative bg-cover bg-center" 
-        style={{ backgroundImage: "url('/bg.webp')", height: "100dvh" }}  // Use 100dvh for mobile
+        className="relative bg-cover bg-center min-h-screen" 
+        style={{
+          backgroundImage: "url('/bg.webp')",
+          backgroundSize: 'cover',  // Ensures the image doesn't zoom in
+          backgroundPosition: 'center center',  // Centers the image
+          height: '100vh',  // Ensures the section height is consistent
+        }}
       >
         <div className="absolute inset-0 bg-black opacity-60"></div>
 
@@ -91,9 +96,9 @@ const Homepage = () => {
 
         <motion.div
           className="container mx-auto flex flex-col justify-center items-center relative z-20 min-h-screen text-center py-24 lg:py-48"
-          initial={{ opacity: 0 }}  // Start off-screen and transparent
-          animate={{ opacity: 1 }}  // Slide in and become opaque
-          transition={{ duration: 0.5 }} // Smooth and timed transition
+          initial={{ opacity: 0, y: 0 }}  // Starting position for smooth animation
+          animate={{ opacity: 1, y: 0 }}  // Ending position
+          transition={{ duration: 1, ease: "easeOut" }} // Smooth transition
         >
           <h2 className="lg:text-5xl text-3xl font-extrabold text-white mb-4 drop-shadow-lg">
             Manage Your Expenses with Ease
