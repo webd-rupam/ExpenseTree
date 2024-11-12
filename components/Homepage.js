@@ -91,8 +91,8 @@ const Homepage = () => {
 
         <motion.div
           className="container mx-auto flex flex-col justify-center items-center relative z-20 min-h-screen text-center py-24 lg:py-48"
-          initial={{ opacity: 0, y: 100 }}  // Start off-screen and transparent
-          animate={{ opacity: 1, y: 0 }}  // Slide in and become opaque
+          initial={{ opacity: 0 }}  // Start off-screen and transparent
+          animate={{ opacity: 1 }}  // Slide in and become opaque
           transition={{ duration: 0.5 }} // Smooth and timed transition
         >
           <h2 className="lg:text-5xl text-3xl font-extrabold text-white mb-4 drop-shadow-lg">
