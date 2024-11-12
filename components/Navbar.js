@@ -57,7 +57,7 @@ const Navbar = () => {
     <div className="flex items-center justify-between w-full md:justify-start mb-4 md:mb-0">
       <Link href="/" className="flex items-center">
         <Image src={"/logo.png"} width={40} height={10} alt="logo" />
-        <span className="flex lg:text-2xl text-lg font-bold text-yellow-500 tracking-tight ml-2">
+        <span className="flex lg:text-2xl text-lg font-bold text-yellow-500 tracking-tight">
           Expense<h1 className="font-bold text-green-600">Tree</h1>
         </span>
       </Link>
