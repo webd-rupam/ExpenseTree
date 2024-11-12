@@ -85,12 +85,6 @@ const Homepage = () => {
           <span className="text-white text-center font-bold text-lg overflow-hidden whitespace-nowrap text-ellipsis">
             <span className='text-blue-400'>Welcome,</span> {user.displayName}!
           </span>
-          <button 
-            onClick={handleLogout} 
-            className="bg-red-500 text-white px-2 py-1 mt-2 rounded-md hover:bg-red-600 transition font-bold"
-          >
-            Logout
-          </button>
         </div>
       )}
 
