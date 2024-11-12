@@ -96,11 +96,11 @@ const Homepage = () => {
 
         <motion.div
           className="container mx-auto flex flex-col justify-center items-center relative z-20 min-h-screen text-center py-24 lg:py-48"
-          initial={{ opacity: 0, y: 0 }}  // Starting position for smooth animation
-          animate={{ opacity: 1, y: 0 }}  // Ending position
-          transition={{ duration: 1, ease: "easeOut" }} // Smooth transition
+          initial={{ opacity: 0, y: 100 }}  
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ duration: 1, ease: "easeOut" }}
         >
-          <h2 className="lg:text-5xl text-3xl font-extrabold text-white mb-4 drop-shadow-lg">
+          <h2 className="lg:text-5xl text-3xl font-extrabold text-white mb-4 drop-shadow-lg mx-4">
             Manage Your Expenses with Ease
           </h2>
           <p className="text-xl text-white mb-8 drop-shadow-lg">
